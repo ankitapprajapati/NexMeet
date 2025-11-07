@@ -16,7 +16,7 @@ export default async function Navbar() {
             className="flex items-center gap-x-2 text-2xl font-bold text-white"
           >
             <Image src={bg} alt="Icon" width={45} height={3} />
-            <h1>NexMeet</h1>
+            <h1 >NexMeet</h1>
           </Link>
         </div>
         <div className="flex items-end">

@@ -74,6 +74,7 @@ function MeetingScreen() {
     return <UpcomingMeetingScreen />;
   }
   const description = call.state.custom.description;
+  // console.log(description)
   return (
     <div className="space-y-4">
       {description && (
@@ -87,7 +88,8 @@ function MeetingScreen() {
         </div>
       )}
       {setupComplete ? (
-        <CallUi />
+        <div>hiiiii</div>
+        // <CallUi />
       ) : (
         <SetupUi onSetupComplete={handlesetupComplete} />
       )}

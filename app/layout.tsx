@@ -17,7 +17,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(Next_Auth_Config);
-  console.log(session);
+  // console.log(session);
   return (
     <html lang="en">
       <body className="bg-slate-200">

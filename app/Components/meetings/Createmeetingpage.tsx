@@ -16,6 +16,7 @@ import StartTimeInput from "./StartTimeInput";
 import ParticipantInput from "./ParticipantInput";
 import MeetingLink from "./MeetingLink";
 import { RecordSettingsRequestModeEnum } from "@stream-io/video-react-sdk";
+import {v4 as uuidv4} from 'uuid'
 
 export default function CreateMeetingPage() {
   const { data: session } = useSession();
@@ -31,7 +32,7 @@ export default function CreateMeetingPage() {
       return;
     }
     try {
-      const id = crypto.randomUUID();
+      const id = uuidv4();
       const callType = participantInput ? "Private_Meeting" : "default";
       const call = client.call(callType, id);
       const memberEmails = participantInput

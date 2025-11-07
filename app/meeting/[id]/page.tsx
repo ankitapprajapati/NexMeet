@@ -5,5 +5,6 @@ interface PageProps {
 }
 
 export default function Page({ params: { id } }: PageProps) {
+  // return <div>hii</div>
   return <MeetingPage id={id} />;
 }

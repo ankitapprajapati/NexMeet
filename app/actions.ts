@@ -7,7 +7,7 @@ import db from "@/db"
 
 export default async function getToken() {
     const streamApiKey = process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY
-    const apiSecret = process.env.STREAM_VIDEO_API_SECRET
+    const apiSecret = process.env.VIDEOSDK_SECRET_KEY
 
     const session = await getServerSession(Next_Auth_Config)
     if (!streamApiKey || !apiSecret) {
@@ -23,6 +23,7 @@ export default async function getToken() {
     const issuedAt = Math.floor(Date.now() / 1000) - 60;
 
     const token = streamClient.createToken(session.user.id, expireationTime, issuedAt)
+    // console.log("token : ", token)
     return token
 }
 
@@ -43,6 +44,6 @@ export async function getUserIds(emailadresses: string[]) {
     }
     catch (e) {
         console.log("Error in Getting ID's")
-        throw new Error()
+        throw new Error("Error in getting ID's")
     }
 }

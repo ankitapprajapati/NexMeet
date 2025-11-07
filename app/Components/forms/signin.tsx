@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "../ui/button";
+import { useState } from "react";
 import {
   Form,
   FormControl,
@@ -18,6 +19,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "../ui/use-toast";
 
 export default function SignInComponent() {
+  const { toast } = useToast();
+  const [isLoading,setIsLoading] = useState(false);
   const FormSchema = z.object({
     username: z
       .string()
@@ -29,7 +32,6 @@ export default function SignInComponent() {
       .string()
       .min(8, { message: "password must contain atleat 8 character" }),
   });
-  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -40,17 +42,28 @@ export default function SignInComponent() {
   });
   const router = useRouter();
   async function onSubmit(values: z.infer<typeof FormSchema>) {
+    if( isLoading ) return;
     try {
+      setIsLoading(true);
       const signindata = await signIn("credentials", {
         username: values.username,
         password: values.password,
         redirect: false,
       });
+
+      if (signindata?.error === "CredentialsSignin") {
+        toast({
+          title: "Invalid Credentials",
+          description: "User not found or password incorrect.",
+        });
+        router.push("/signin")
+        return;
+      }
+
       if (signindata?.error) {
-        console.log(signindata.error);
         toast({
           title: "Oops! Something Went Wrong",
-          description: "Error Signing In",
+          description: "Try after a while",
         });
         router.push("/");
       } else {
@@ -62,6 +75,8 @@ export default function SignInComponent() {
       }
     } catch (err) {
       router.push("/AuthError");
+    } finally{
+      setIsLoading(false);
     }
   }
   return (
@@ -99,7 +114,7 @@ export default function SignInComponent() {
             )}
           />
         </div>
-        <Button className="mt-5 w-full" type="submit">
+        <Button className="mt-5 w-full" type="submit" disabled={isLoading}>
           Sign In
         </Button>
       </form>

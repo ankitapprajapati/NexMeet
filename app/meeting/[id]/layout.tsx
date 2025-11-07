@@ -11,6 +11,7 @@ export default async function MeetingsLayout({
   children: React.ReactNode;
 }>) {
   const session = await getServerSession(Next_Auth_Config);
+  console.log(session);
   if (session?.user) {
     return (
       <div>

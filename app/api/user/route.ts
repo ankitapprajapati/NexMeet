@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
         });
 
         if (existingUser) {
-            return Response.json({ error: "User already exists", status: 400 });
+            throw new Error("User already exists !!")
         }
 
         const hashedPassword = await hash(password, 10);
@@ -43,11 +43,23 @@ export async function POST(req: NextRequest) {
                 password: hashedPassword
             }
         });
-        console.log("New user created:", newUser);
 
         return Response.json({ user: newUser, message: "Signed up Successfully", status: 201 });
-    } catch (error) {
-        console.error("Error occurred while creating user:", error);
-        return Response.json({ error: "An error occurred while creating user" }, { status: 500 });
+    } 
+    catch (error: any) {
+        // console.error("Error occurred while creating user:", error);
+
+        if (error.message === "User already exists!") {
+            return Response.json({ error: error.message }, { status: 400 });
+        }
+
+        if (error instanceof z.ZodError) {
+            return Response.json({ error: error.errors }, { status: 400 });
+        }
+
+        return Response.json(
+            { error: "An error occurred while creating user" },
+            { status: 500 }
+        );
     }
 }

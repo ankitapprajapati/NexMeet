@@ -49,7 +49,7 @@ export default function SignUpComponent() {
   });
   async function onSubmit(values: z.infer<typeof FormSchema>) {
     try {
-      await axios.post(
+      const response = await axios.post(
         "api/user",
         {
           Name: values.Name,
@@ -63,10 +63,9 @@ export default function SignUpComponent() {
         description: "Sign Up Successful",
       });
       router.push("/admin");
-    } catch (err) {
-      console.log(err);
+    } catch (err:any) {
       toast({
-        title: "Oops! Something Went Wrong",
+        title: err,
         description: "Error Signing Up",
       });
       router.push("/");

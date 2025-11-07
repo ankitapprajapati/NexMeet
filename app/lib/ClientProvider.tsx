@@ -7,7 +7,6 @@ import {
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import getToken from "../actions";
 
 interface ClientProviderProps {
   children: React.ReactNode;
@@ -27,15 +26,14 @@ export default function ClientProvider({ children }: ClientProviderProps) {
 
 function useInitializeVideoClient() {
   const { data: session } = useSession();
-  const [videoClient, setVideoClient] = useState<StreamVideoClient | null>(
-    null,
-  );
+  const [videoClient, setVideoClient] = useState<StreamVideoClient | null>(null);
 
   useEffect(() => {
     if (!session) {
       setVideoClient(null);
       return;
     }
+
     const streamUser: User = {
       id: session.user.id,
       name: session.user.name!,
@@ -43,18 +41,29 @@ function useInitializeVideoClient() {
 
     const apiKey = process.env.NEXT_PUBLIC_STREAM_VIDEO_API_KEY;
     if (!apiKey) {
-      throw new Error("Stream API Key or Secret not Set");
+      throw new Error("Stream API Key not set");
     }
+
+    const tokenProvider = async () => {
+      const res = await fetch("/api/token");
+      if (!res.ok) throw new Error("Failed to fetch Stream token");
+      const data = await res.json();
+      return data.token;
+    };
+
     const client = new StreamVideoClient({
       apiKey,
       user: streamUser,
-      tokenProvider: session ? getToken : undefined,
+      tokenProvider,
     });
+
     setVideoClient(client);
+
     return () => {
       client.disconnectUser();
       setVideoClient(null);
     };
-  }, [session, session?.user.id, session?.user.name]);
+  }, [session?.user.id, session?.user.name]);
+
   return videoClient;
 }
