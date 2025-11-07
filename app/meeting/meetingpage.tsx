@@ -88,8 +88,8 @@ function MeetingScreen() {
         </div>
       )}
       {setupComplete ? (
-        <div>hiiiii</div>
-        // <CallUi />
+        // <div>hiiiii</div>
+        <CallUi />
       ) : (
         <SetupUi onSetupComplete={handlesetupComplete} />
       )}
